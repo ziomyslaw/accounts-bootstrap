@@ -17,7 +17,7 @@ class Form extends Accounts.ui.Form {
       fields,
       buttons,
       error,
-      message,
+      messages,
       ready = true,
       className,
       formState
@@ -63,8 +63,8 @@ class Form extends Accounts.ui.Form {
           ) : null }
         </fieldset>
         <fieldset>
-          <Accounts.ui.FormMessage className="alert alert-danger m-t-1 m-b-0" role="alert"
-                                   style={{display: 'block'}} {...message} />
+          <Accounts.ui.FormMessages className="alert alert-danger m-t-1 m-b-0" role="alert"
+                                   style={{display: 'block'}} messages={...messages} />          
         </fieldset>
       </form>
     );
@@ -215,6 +215,26 @@ class FormMessage extends Accounts.ui.FormMessage {
     ) : null;
   }
 }
+
+class FormMessages extends Accounts.ui.FormMessages {
+  render () {
+    let { messages, type, role, className = "messages", style = {} }  = this.props;
+    return messages.length > 0 && (
+      <div style={ style }
+          className={[ className, type ].join(' ')}>
+        {messages
+          .filter(message => !('field' in message))
+          .map(({ message, type }, i) =>
+          <Accounts.ui.FormMessage
+            message={message}
+            type={type}
+            key={i}
+          />
+        )}
+      </div>
+    );
+  }
+}
 // Notice! Accounts.ui.LoginForm manages all state logic at the moment, so avoid
 // overwriting this one, but have a look at it and learn how it works. And pull
 // requests altering how that works are welcome.
@@ -228,6 +248,7 @@ Accounts.ui.Field = Field;
 Accounts.ui.PasswordOrService = PasswordOrService;
 Accounts.ui.SocialButtons = SocialButtons;
 Accounts.ui.FormMessage = FormMessage;
+Accounts.ui.FormMessages = FormMessages;
 
 // Export the themed version.
 export { Accounts, STATES };
